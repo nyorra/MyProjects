@@ -1,17 +1,15 @@
 def main():
-    introduction = intro()
+    intro()
     board = create_grid()
-    pretty = printPretty(board)
+    print_pretty(board)
     symbol_1, symbol_2 = sym()
-    full = isFull(board, symbol_1, symbol_2)
+    is_full(board, symbol_1, symbol_2)
 
 
 def intro():
-    print("Привет! Добро пожаловать в игру Крестики-нолики!")
-    print("\n")
-    print("Правила: Игрок 1 и игрок 2, представленные символами X и O, по очереди ставят свои marks на поле 3*3.\n" 
-          "Выигрывает тот, кто первым выстроит три своих символа в ряд по горизонтали, вертикали или диагонали.\n")
-    print("\n")
+    print("Привет! Добро пожаловать в игру Крестики-нолики!\n")
+    print("Правила: Игрок 1 и игрок 2, по очереди ходят на поле 3*3.\n" 
+          "Выигрывает тот, кто первым выстроит три своих символа в прямой ряд.\n")
     input("Нажмите Enter для продолжения.")
     print("\n")
 
@@ -33,11 +31,12 @@ def sym():
         symbol_2 = "X"
         print("Игрок 2, вы играете X. ")
     input("Нажмите Enter для продолжения.")
-    print("\n")
+    print("\n") 
     return (symbol_1, symbol_2)
 
 
-def startGamming(board, symbol_1, symbol_2, count):
+def game_start(board, symbol_1, symbol_2, count):
+    player = None
     if count % 2 == 0:
         player = symbol_1
     elif count % 2 == 1:
@@ -49,14 +48,14 @@ def startGamming(board, symbol_1, symbol_2, count):
                        "[левая колонка: 0, средняя: 1, правая: 2]: "))
 
     while (row > 2 or row < 0) or (column > 2 or column < 0):
-        outOfBoard(row, column)
+        out_of_board(row, column)
         row = int(input("Выберите строку:"
                         "[0, 1, 2]: "))
         column = int(input("Выберите колонку:"
                            "[0, 1, 2]: "))
 
     while (board[row][column] == symbol_1) or (board[row][column] == symbol_2):
-        filled = illegal(board, symbol_1, symbol_2, row, column)
+        illegal(board, symbol_1, symbol_2, row, column)
         row = int(input("Выберите строку:"
                         "[0, 1, 2]: "))
         column = int(input("Выберите колонку:"
@@ -70,32 +69,31 @@ def startGamming(board, symbol_1, symbol_2, count):
     return (board)
 
 
-def isFull(board, symbol_1, symbol_2):
+def is_full(board, symbol_1, symbol_2):
     count = 1
     winner = True
     while count < 10 and winner == True:
-        gaming = startGamming(board, symbol_1, symbol_2, count)
-        pretty = printPretty(board)
+        game_start(board, symbol_1, symbol_2, count)
+        print_pretty(board)
 
         if count == 9:
             print("Игровое поле заполнено. Игра окончена.")
             if winner == True:
                 print("Ничья.")
 
-        winner = isWinner(board, symbol_1, symbol_2, count)
+        winner = is_winner(board, symbol_1, symbol_2, count)
         count += 1
     if winner == False:
         print("Игра окончена.")
     report(count, winner, symbol_1, symbol_2)
 
 
-def outOfBoard(row, column):
+def out_of_board(row, column):
     print("Вы выбрали ячейку за пределами поля. Выберите другую.")
 
 
-def printPretty(board):
+def print_pretty(board):
     rows = len(board)
-    cols = len(board)
     print("---+---+---")
     for r in range(rows):
         print(board[r][0], " |", board[r][1], "|", board[r][2])
@@ -103,7 +101,7 @@ def printPretty(board):
     return board
 
 
-def isWinner(board, symbol_1, symbol_2, count):
+def is_winner(board, symbol_1, symbol_2, count):
     winner = True
     for row in range(0, 3):
         if (board[row][0] == board[row][1] == board[row][2] == symbol_1):
